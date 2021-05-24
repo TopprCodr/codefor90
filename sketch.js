@@ -9,7 +9,7 @@ var player1,ground;
 var playerLife = 0;
 var backgroundImg,backgroundImg2;
 var gameState = "instructions";
-var start,restart;
+var start;
 //var rocksound;
 
 function preload() {
@@ -26,8 +26,8 @@ function setup() {
     engine = Engine.create();
     world = engine.world;
 
-    player1 = new player(300, height - 30, 100, 100)
-    ground = new Ground(600, height, 1200, 5);
+    player1 = new player(300, height - 40, 100, 100)
+    ground = new Ground(600, height,1200,5);
     start = createSprite(600,180,100,20);
     start.addImage(ins_image)
     start.scale=0.3
@@ -51,19 +51,26 @@ function setup() {
       textSize(30)
       fill("white")
       text("LifeTime  " + playerLife, width - 250, 50);
-      //restart.visible = false;
       start.visible = false;
+
+
 
     Events.on(engine, 'collisionStart', collision);
 
     playerLife = Math.round(frameCount / 10);
 
 //to spawn praticles
-    if (frameCount % 30 == 0) {
+    if (frameCount % 15 == 0) {
         newParticle();
       }
       for (var i = 0; i < particles.length; i++) {
         particles[i].display();
+        if(particles[i].body.position.y>370){
+          World.remove(world, particles[i].body);
+              particles.splice(i, 1);
+              i--;
+            
+        }
       }
 // to spawn stones
       if (frameCount % 100 == 0) {
@@ -71,9 +78,14 @@ function setup() {
       }
       for (var i = 0; i < stones.length; i++) {
         stones[i].display();
+        if(stones[i].body.position.y>370){
+          World.remove(world, stones[i].body);
+              stones.splice(i, 1);
+              i--;
+        }
       }
     
-    if (player1.body.position.y > 450) {
+    if (player1.body.position.y > 430) {
       gameState = "end";
     }
     ground.display();
@@ -88,13 +100,11 @@ else if (gameState === "end") {
   textSize(40)
   fill("red");
   text("GAME OVER", width - 700, 150);
-//restart.visible=true;
+
 }
    drawSprites();
    
-//if(mousePressedOver(restart)){
- // reset();
-//}
+
   }
 
     function newParticle() {
@@ -126,8 +136,4 @@ else if (gameState === "end") {
       }
       }
     }
-   /* function reset(){
-      gameState="play";
-      restart.visible=false;
-      World.remove(p,world)
-      }*/
+   
